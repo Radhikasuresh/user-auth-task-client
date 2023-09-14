@@ -7,9 +7,10 @@ import { useNavigate } from "react-router-dom";
 function RegistrationComponent() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [cpassword, setCPassword] = useState("");
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
-  const [contact, setContact] = useState();
+  const [contact, setContact] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -27,8 +28,13 @@ function RegistrationComponent() {
       setIsLoading(false);
       return;
     }
+    if (password !== cpassword) {
+      setMessage("Passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
     if (contact.length < 10) {
-      setMessage("Contact Number should be atleast 10 characters long.");
+      setMessage("Contact Number should be at least 10 characters long.");
       setIsLoading(false);
       return;
     }
@@ -40,17 +46,19 @@ function RegistrationComponent() {
           email,
           contact,
           password,
+          cpassword,
         }
       );
 
       if (response.status === 401) {
-        setMessage("Email already exists..please Login");
+        setMessage("Email already exists. Please Login.");
       } else if (response.status === 201) {
         setMessage("Registration successful!");
         setUsername("");
         setPassword("");
         setContact("");
         setEmail("");
+        setCPassword("");
         localStorage.setItem("user", email);
         setTimeout(() => {
           navigate("/login");
@@ -113,6 +121,17 @@ function RegistrationComponent() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <Form.Group controlId="reg-password">
+            <Form.Label>
+              <b>Confirm Password:</b>
+            </Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Re-Enter Password"
+              value={cpassword}
+              onChange={(e) => setCPassword(e.target.value)}
+            />
+          </Form.Group>
         </Form.Group>
         <br />
         {isLoading ? (

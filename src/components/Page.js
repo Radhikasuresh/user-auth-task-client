@@ -19,7 +19,7 @@ function Page() {
       if (response.status === 200) {
         localStorage.removeItem("user");
         setMessage("Logout successful");
-        // alert("Logged Out successfully");
+
         setTimeout(() => {
           navigate("/");
         }, 2000);
