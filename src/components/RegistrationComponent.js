@@ -27,7 +27,11 @@ function RegistrationComponent() {
       setIsLoading(false);
       return;
     }
-
+    if (contact.length < 10) {
+      setMessage("Contact Number should be atleast 10 characters long.");
+      setIsLoading(false);
+      return;
+    }
     try {
       const response = await axios.post(
         "https://user-auth-task-server-z21n.vercel.app/auth/register",
