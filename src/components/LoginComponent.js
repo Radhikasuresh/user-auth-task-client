@@ -5,25 +5,31 @@ import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
 function LoginComponent() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      const response = await axios.post("https://user-auth-task-server-z21n.vercel.app/auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "https://user-auth-task-server-z21n.vercel.app/auth/login",
+        {
+          email,
+          password,
+        }
+      );
       if (response.status === 200) {
         setMessage("Login successful!");
+        localStorage.setItem("User", email);
         alert("Logged In successfully");
         navigate("/page");
       }
     } catch (error) {
       setMessage("Login failed. Please check your credentials.");
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -31,21 +37,26 @@ function LoginComponent() {
 
   return (
     <Container>
-      <h2>User Login</h2>
+      <h2 style={{ textAlign: "center" }}>User Login</h2>
+      <br />
       {message && <Alert variant="info">{message}</Alert>}
       <Form onSubmit={handleLogin}>
         <Form.Group controlId="login-username">
-          <Form.Label>Username</Form.Label>
+          <Form.Label>
+            <b>Email:</b>
+          </Form.Label>
           <Form.Control
-            type="text"
-            placeholder="Enter Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
 
         <Form.Group controlId="login-password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>
+            <b>Password:</b>
+          </Form.Label>
           <Form.Control
             type="password"
             placeholder="Enter Password"
@@ -58,7 +69,7 @@ function LoginComponent() {
         {isLoading ? (
           <ClipLoader color={"#123abc"} loading={isLoading} />
         ) : (
-          <Button variant="primary" type="submit">
+          <Button variant="success" type="submit">
             Login
           </Button>
         )}
